@@ -2,6 +2,8 @@ const express = require('express');
 const rescue = require('express-rescue');
 const routes = require('./routes');
 
+const authController = require('./controllers/authController');
+
 const app = express();
 
 app.use(express.json());
@@ -9,7 +11,8 @@ app.use(express.json());
 const apiRoutes = express.Router();
 
 apiRoutes.post('/login', rescue(routes.login));
-apiRoutes.post('/user', rescue(routes.createUser));
+apiRoutes.post('/user', rescue(routes.create));
+apiRoutes.get('/user', authController.validateToken, rescue(routes.list));
 
 app.use(apiRoutes);
 
