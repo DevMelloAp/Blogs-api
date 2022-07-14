@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET } = process.env;
 
-const { User } = require('../models');
+const { User } = require('../database/models');
 
 module.exports = async (req, res) => {
     const { email, password } = req.body;  
