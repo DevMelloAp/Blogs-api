@@ -18,6 +18,11 @@ const userService = {
    
     return category;
   },
+  listCategories: async () => {
+    const categories = await Category.findAll();
+
+    return categories;
+  },  
 };
 
 module.exports = userService;
