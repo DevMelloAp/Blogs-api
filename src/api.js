@@ -12,6 +12,7 @@ const apiRoutes = express.Router();
 
 apiRoutes.post('/login', rescue(routes.login));
 apiRoutes.post('/user', rescue(routes.create));
+apiRoutes.get('/user/:id', authController.validateToken, rescue(routes.getById));
 apiRoutes.get('/user', authController.validateToken, rescue(routes.list));
 
 app.use(apiRoutes);

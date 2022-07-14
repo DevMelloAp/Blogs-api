@@ -17,6 +17,15 @@ const userService = {
     return value;
   },
   create: async ({ displayName, email, password, image }) => {
+    const usersList = await userService.list();
+        const emailList = usersList.map((it) => it.email);
+
+        if (emailList.includes(email)) {
+            const e = new Error('User already registered');
+            e.name = 'ConflictError';
+            throw e;
+        }
+
     const user = await User.create({ displayName, email, password, image });
    
     return user;
@@ -27,6 +36,19 @@ const userService = {
    });
     return users;
   },   
+  getById: async (id) => {
+    const user = await User.findByPk(id, { 
+      attributes: { exclude: ['password'] },
+    });  
+
+    if (!user) {
+        const e = new Error('User does not exist');
+        e.name = 'NotFoundError';
+        throw e;
+    }
+
+    return user;
+  },
 };
 
 module.exports = userService;

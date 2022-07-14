@@ -6,18 +6,7 @@ const jwtService = require('../services/jwtService');
     create: async (req, res) => {
         const { displayName, email, password, image } = userService.validateBody(req.body);
 
-        const users = await userService.list();
-        const emailList = users.map((it) => it.email);
-
-        if (emailList.includes(email)) {
-            const e = new Error('User already registered');
-            e.name = 'ConflictError';
-            throw e;
-        }
-        
-        const user = await userService.create({ displayName, email, password, image });
-
-        if (!user) throw Error;
+        await userService.create({ displayName, email, password, image });
 
         const token = jwtService.createToken(email);
 
@@ -27,7 +16,12 @@ const jwtService = require('../services/jwtService');
         const users = await userService.list();
             
         res.status(200).json(users);
-      },    
+      },
+    getById: async (req, res) => {
+        const user = await userService.getById(req.params.id);
+
+        res.status(200).json(user);
+    },    
 };
 
 module.exports = userController;
