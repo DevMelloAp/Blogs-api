@@ -52,24 +52,22 @@ const postService = {
   },  
   getPostById: async (id) => {
     const post = await BlogPost.findByPk(id, { 
-      include: [{
-        model: User, 
+      include: [{ model: User, 
         as: 'user',
         attributes: {
           exclude: ['password'],
         },
-      }, {
-        model: Category,
+      }, { model: Category,
         as: 'categories',
         through: { attributes: [] },
       }],
       attributes: { exclude: ['password'] },
     });  
 
-    if (!post) {
-        const e = new Error('Post does not exist');
-        e.name = 'NotFoundError';
-        throw e;
+    if (!post) { 
+      const e = new Error('Post does not exist');
+      e.name = 'NotFoundError';
+      throw e;
     }
 
     return post;
