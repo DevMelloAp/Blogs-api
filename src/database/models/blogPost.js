@@ -6,18 +6,19 @@ const createBlogPost= (sequelize, DataTypes) => {
       userId: {
         type:DataTypes.STRING,
         references: {
-            model: 'user',
+            model: 'User',
             key: 'id'
         }
       }, 
       published: DataTypes.DATE,
       updated: DataTypes.DATE,
     }, { 
+        timestamps: false,
         tableName: 'BlogPosts'
     });
 
     BlogPost.associate = (db) => {
-        BlogPost.belongsTo(db.User, { as: 'Users', foreignKey: 'userId' })
+        BlogPost.belongsTo(db.User, { as: 'user', foreignKey: 'userId' })
     }
   
     return BlogPost;

@@ -16,6 +16,9 @@ apiRoutes.get('/user/:id', authController.validateToken, rescue(routes.getById))
 apiRoutes.get('/user', authController.validateToken, rescue(routes.list));
 apiRoutes.post('/categories', authController.validateToken, rescue(routes.createCategory));
 apiRoutes.get('/categories', authController.validateToken, rescue(routes.listCategories));
+apiRoutes.post('/post', authController.validateToken, rescue(routes.createPost));
+apiRoutes.get('/post/:id', authController.validateToken, rescue(routes.getPostById));
+apiRoutes.get('/post', authController.validateToken, rescue(routes.listPosts));
 
 app.use(apiRoutes);
 
