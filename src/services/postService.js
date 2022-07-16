@@ -16,7 +16,9 @@ const postService = {
     return value;
   },
   createPost: async ({ title, content, categoryIds, published, updated }) => {
-    if (!categoryIds) {
+    const categorieExist = await Category.findAll({ where: { id: categoryIds } });
+    
+    if (categorieExist.length === 0) {
       const e = new Error('"categoryIds" not found');
             e.name = 'ValidationError';
             throw e;

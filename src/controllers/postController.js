@@ -1,4 +1,5 @@
 const postService = require('../services/postService');
+const postCategoryService = require('../services/postCategoryService');
 const { User } = require('../database/models');
 
  const postController = {
@@ -20,6 +21,10 @@ const { User } = require('../database/models');
 
         const post = await postService
         .createPost({ title, content, categoryIds, published, updated, userId });
+
+        const { id } = post;
+
+        await postCategoryService.createPostCategory({ postId: id, categoryId: categoryIds });
 
         res.status(201).json(post);
     },
