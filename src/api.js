@@ -18,6 +18,7 @@ apiRoutes.post('/categories', authController.validateToken, rescue(routes.create
 apiRoutes.get('/categories', authController.validateToken, rescue(routes.listCategories));
 apiRoutes.post('/post', authController.validateToken, rescue(routes.createPost));
 apiRoutes.get('/post/:id', authController.validateToken, rescue(routes.getPostById));
+apiRoutes.put('/post/:id', authController.validateToken, rescue(routes.updatePost));
 apiRoutes.get('/post', authController.validateToken, rescue(routes.listPosts));
 
 app.use(apiRoutes);

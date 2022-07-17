@@ -37,6 +37,21 @@ const { User } = require('../database/models');
         const post = await postService.getPostById(req.params.id);
 
         res.status(200).json(post);
+    },
+    updatePost: async (req, res) => {
+        const { title, content } = req.body;  
+        const { authorization } = req.headers;
+
+        if (!title || !content) {
+            return res.status(400)  
+            .json({ message: 'Some required fields are missing' }); 
+        }
+        
+        await postService.validateBody(req.body);
+        
+        const post = await postService.updatePost(req.params.id, title, content, authorization);
+
+        res.status(200).json(post);
     }, 
 };
 

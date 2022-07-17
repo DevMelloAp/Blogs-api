@@ -3,7 +3,7 @@ const { create, list, getById } = require('./controllers/userController');
 
 const { createCategory, listCategories } = require('./controllers/categoryController');
 
-const { createPost, listPosts, getPostById } = require('./controllers/postController');
+const { createPost, listPosts, getPostById, updatePost } = require('./controllers/postController');
 
 module.exports = {
     login,
@@ -15,4 +15,5 @@ module.exports = {
     createPost,
     listPosts,
     getPostById,
+    updatePost,
   };

@@ -1,12 +1,12 @@
 const Joi = require('joi');
 const { BlogPost, User, Category } = require('../database/models');
+const jwtService = require('./jwtService');
 
 const postService = {
   validateBody: (data) => {
     const schema = Joi.object({
       title: Joi.string().required(),
       content: Joi.string().required(),
-      categoryIds: Joi.array().items(Joi.number().required()), 
     });
 
     const { error, value } = schema.validate(data);
@@ -73,6 +73,27 @@ const postService = {
     }
 
     return post;
+  },
+  updatePost: async (id, title, content, authorization) => {
+    const idPost = await postService.getPostById(id);
+
+    const [emailP] = [idPost].map((it) => it.user.email);
+
+    const tokenEmailPost = jwtService.createToken(emailP);
+
+    if (authorization !== tokenEmailPost) { 
+      const e = new Error('Unauthorized user');
+      e.name = 'UnauthorizedError';
+      throw e;
+    }
+
+    await BlogPost.update({ title, content,
+    },
+      { where: { id } });
+
+    const updatedPost = await postService.getPostById(id);
+
+    return updatedPost;
   },
 };
 
