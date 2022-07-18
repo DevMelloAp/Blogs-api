@@ -95,6 +95,31 @@ const postService = {
 
     return updatedPost;
   },
+  removePost: async (id) => {
+    const idPost = await postService.getPostById(id);
+
+    const [emailP] = [idPost].map((it) => it.user.email);
+
+    const tokenEmailPost = jwtService.createToken(emailP);
+
+    const valToken = jwtService.validateToken(tokenEmailPost);
+
+    if (!valToken) { 
+      const e = new Error('Unauthorized user');
+      e.name = 'UnauthorizedError';
+      throw e;
+    }
+
+    if (!idPost) {
+      const e = new Error('Post does not exist');
+      e.name = 'NotFoundError';
+      throw e;
+    }
+
+      const removed = await BlogPost.destroy({ where: { id: idPost.id } });
+  
+      return removed;
+    },
 };
 
 module.exports = postService;

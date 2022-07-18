@@ -13,12 +13,14 @@ const apiRoutes = express.Router();
 apiRoutes.post('/login', rescue(routes.login));
 apiRoutes.post('/user', rescue(routes.create));
 apiRoutes.get('/user/:id', authController.validateToken, rescue(routes.getById));
+apiRoutes.delete('/user/me', authController.validateToken, rescue(routes.removeUserMe));
 apiRoutes.get('/user', authController.validateToken, rescue(routes.list));
 apiRoutes.post('/categories', authController.validateToken, rescue(routes.createCategory));
 apiRoutes.get('/categories', authController.validateToken, rescue(routes.listCategories));
 apiRoutes.post('/post', authController.validateToken, rescue(routes.createPost));
 apiRoutes.get('/post/:id', authController.validateToken, rescue(routes.getPostById));
 apiRoutes.put('/post/:id', authController.validateToken, rescue(routes.updatePost));
+apiRoutes.delete('/post/:id', authController.validateToken, rescue(routes.removePost));
 apiRoutes.get('/post', authController.validateToken, rescue(routes.listPosts));
 
 app.use(apiRoutes);

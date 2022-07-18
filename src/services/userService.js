@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { User } = require('../database/models');
+const jwtService = require('./jwtService');
 
 const userService = {
   validateBody: (data) => {
@@ -48,6 +49,14 @@ const userService = {
     }
 
     return user;
+  },
+  removeUserMe: async (authorization) => {
+    const users = await userService.list();
+
+    const user = users.find((it) => jwtService.createToken(it.email) === authorization);
+
+    const removed = await User.destroy({ where: { id: user.id } });
+    return removed;
   },
 };
 

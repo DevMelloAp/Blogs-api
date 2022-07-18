@@ -22,6 +22,12 @@ const jwtService = require('../services/jwtService');
 
         res.status(200).json(user);
     },    
+    removeUserMe: async (req, res) => {
+        const { authorization } = req.headers;
+        const removed = await userService.removeUserMe(authorization);
+
+        res.status(204).json(removed);
+    }, 
 };
 
 module.exports = userController;

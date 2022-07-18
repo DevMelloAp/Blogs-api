@@ -53,6 +53,11 @@ const { User } = require('../database/models');
 
         res.status(200).json(post);
     }, 
+    removePost: async (req, res) => {
+        await postService.removePost(req.params.id);
+
+        res.sendStatus(204).end();
+    },
 };
 
 module.exports = postController;
