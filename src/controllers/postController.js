@@ -58,6 +58,11 @@ const { User } = require('../database/models');
 
         res.sendStatus(204).end();
     },
+    getPostSearch: async (req, res) => {
+        const post = await postService.getPostSearch(req.query.q);
+
+        res.status(200).json(post);
+    },
 };
 
 module.exports = postController;

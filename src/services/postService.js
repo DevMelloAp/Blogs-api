@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { Op } = require('sequelize');
 const { BlogPost, User, Category } = require('../database/models');
 const jwtService = require('./jwtService');
 
@@ -119,6 +120,30 @@ const postService = {
       const removed = await BlogPost.destroy({ where: { id: idPost.id } });
   
       return removed;
+    },
+    getPostSearch: async (q) => { 
+      if (!q) {
+        const listPost = await BlogPost.findAll({
+          include: [{ model: User, as: 'user', attributes: { exclude: ['password'] },
+        }, { model: Category, as: 'categories', through: { attributes: [] } }],
+        attributes: { exclude: ['password'] },
+        });
+        return listPost;
+      }
+
+      const quest = `%${q}%`;
+
+      const searchPost = await BlogPost.findAll({ where: { 
+        [Op.or]: [{ title: { [Op.like]: quest } }, { content: { [Op.like]: quest } }] },
+        include: [{ model: User, as: 'user', attributes: { exclude: ['password'] },
+        }, { model: Category, as: 'categories', through: { attributes: [] },
+        }],
+        attributes: { exclude: ['password'] },
+      });
+
+      if (!searchPost) return [];
+
+      return searchPost;
     },
 };
 

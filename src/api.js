@@ -18,6 +18,7 @@ apiRoutes.get('/user', authController.validateToken, rescue(routes.list));
 apiRoutes.post('/categories', authController.validateToken, rescue(routes.createCategory));
 apiRoutes.get('/categories', authController.validateToken, rescue(routes.listCategories));
 apiRoutes.post('/post', authController.validateToken, rescue(routes.createPost));
+apiRoutes.get('/post/search', authController.validateToken, rescue(routes.getPostSearch));
 apiRoutes.get('/post/:id', authController.validateToken, rescue(routes.getPostById));
 apiRoutes.put('/post/:id', authController.validateToken, rescue(routes.updatePost));
 apiRoutes.delete('/post/:id', authController.validateToken, rescue(routes.removePost));
