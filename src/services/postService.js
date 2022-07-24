@@ -16,7 +16,7 @@ const postService = {
 
     return value;
   },
-  createPost: async ({ title, content, categoryIds, published, updated }) => {
+  createPost: async ({ title, content, categoryIds, published, updated, id }) => {
     const categorieExist = await Category.findAll({ where: { id: categoryIds } });
     
     if (categorieExist.length === 0) {
@@ -29,7 +29,7 @@ const postService = {
     .create({ title, 
       content, 
       categoryIds, 
-      userId: 1,
+      userId: id,
       published, 
       updated,
     });
@@ -96,20 +96,8 @@ const postService = {
 
     return updatedPost;
   },
-  removePost: async (id) => {
+  removePost: async (id, authorization) => {
     const idPost = await postService.getPostById(id);
-
-    const [emailP] = [idPost].map((it) => it.user.email);
-
-    const tokenEmailPost = jwtService.createToken(emailP);
-
-    const valToken = jwtService.validateToken(tokenEmailPost);
-
-    if (!valToken) { 
-      const e = new Error('Unauthorized user');
-      e.name = 'UnauthorizedError';
-      throw e;
-    }
 
     if (!idPost) {
       const e = new Error('Post does not exist');
@@ -117,9 +105,19 @@ const postService = {
       throw e;
     }
 
-      const removed = await BlogPost.destroy({ where: { id: idPost.id } });
+    const [emailOfPost] = [idPost].map((it) => it.user.email);
+
+    const tokenEmailPost = jwtService.createToken(emailOfPost);
+
+    if (authorization !== tokenEmailPost) { 
+      const e = new Error('Unauthorized user');
+      e.name = 'UnauthorizedError';
+      throw e;
+    }
+    
+    const removedPost = await BlogPost.destroy({ where: { id: idPost.id } });
   
-      return removed;
+    return removedPost;
     },
     getPostSearch: async (q) => { 
       if (!q) {

@@ -1,10 +1,14 @@
+const jwt = require('jsonwebtoken');
 const postService = require('../services/postService');
 const postCategoryService = require('../services/postCategoryService');
 const { User } = require('../database/models');
 
+const { JWT_SECRET } = process.env;
+
  const postController = {
     createPost: async (req, res) => {
         const { title, content, categoryIds } = (req.body);
+        const { authorization } = req.headers;
 
         const timeElapsed = Date.now();
         const today = new Date(timeElapsed);
@@ -12,7 +16,9 @@ const { User } = require('../database/models');
 
         const updated = today.toUTCString();
 
-        const userId = User.id;
+        const emailOftoken = jwt.verify(authorization, JWT_SECRET);
+
+        const { id } = await User.findOne({ where: { email: emailOftoken } });
 
         if (!title || !content) {
             return res.status(400)  
@@ -20,11 +26,9 @@ const { User } = require('../database/models');
         }
 
         const post = await postService
-        .createPost({ title, content, categoryIds, published, updated, userId });
+        .createPost({ title, content, categoryIds, published, updated, id });
 
-        const { id } = post;
-
-        await postCategoryService.createPostCategory({ postId: id, categoryId: categoryIds });
+        await postCategoryService.createPostCategory({ postId: post.id, categoryId: categoryIds });
 
         res.status(201).json(post);
     },
@@ -54,9 +58,9 @@ const { User } = require('../database/models');
         res.status(200).json(post);
     }, 
     removePost: async (req, res) => {
-        await postService.removePost(req.params.id);
+        await postService.removePost(req.params.id, req.headers.authorization);
 
-        res.sendStatus(204).end();
+        res.sendStatus(204);
     },
     getPostSearch: async (req, res) => {
         const post = await postService.getPostSearch(req.query.q);
